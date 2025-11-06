@@ -1,0 +1,28 @@
+{
+  "name": "@binkylabs/muzzle",
+  "version": "1.0.0-preview.1",
+  "description": "A muzzle for your TypeSpec linting rules. It’s experimental, slightly unethical, and definitely effective.",
+  "keywords": [
+    "TypeSpec",
+    "CLI",
+    "linting",
+    "rules",
+    "suppression",
+    "tool"
+  ],
+  "homepage": "https://github.com/BinkyLabs/TypeSpec-Muzzle#readme",
+  "bugs": {
+    "url": "https://github.com/BinkyLabs/TypeSpec-Muzzle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BinkyLabs/TypeSpec-Muzzle.git"
+  },
+  "license": "MIT",
+  "author": "Vincent Biret",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

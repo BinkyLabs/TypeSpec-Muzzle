@@ -1,0 +1,23 @@
+{
+  "name": "root-package",
+  "version": "1.0.0",
+  "description": "Welcome to the TypeSpec Muzzle project. This project aims to provide tooling to suppress TypeSpec linting issues from the CLI.",
+  "homepage": "https://github.com/BinkyLabs/TypeSpec-Muzzle#readme",
+  "bugs": {
+    "url": "https://github.com/BinkyLabs/TypeSpec-Muzzle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BinkyLabs/TypeSpec-Muzzle.git"
+  },
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "@binkylabs/muzzle"
+  ]
+}
