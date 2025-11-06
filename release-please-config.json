@@ -1,0 +1,25 @@
+{
+  "bootstrap-sha": "d2f00a074644f4f147081b75b15ffc9738692266",
+  "exclude-paths": [
+    ".github",
+    ".vs",
+    ".vscode"
+  ],
+  "release-type": "node",
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": true,
+  "include-component-in-tag": false,
+  "include-v-in-tag": true,
+  "draft": false,
+  "prerelease": true,
+  "versioning": "prerelease",
+  "prerelease-type": "preview",
+  "packages": {
+    "@binkylabs/muzzle": {
+      "package-name": "@binkylabs/muzzle",
+      "path": "@binkylabs/muzzle",
+      "changelog-path": "CHANGELOG.md"
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
+}
