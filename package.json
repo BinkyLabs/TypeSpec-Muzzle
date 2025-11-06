@@ -15,7 +15,10 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm --workspace @binkylabs/muzzle run test",
+    "build": "npm --workspace @binkylabs/muzzle run build",
+    "lint": "npm --workspace @binkylabs/muzzle run lint",
+    "pack": "npm --workspace @binkylabs/muzzle pack"
   },
   "workspaces": [
     "@binkylabs/muzzle"
