@@ -41,5 +41,8 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "private": false
+  "private": false,
+  "bin": {
+    "muzzle": "./dist/src/cli.js"
+  }
 }
