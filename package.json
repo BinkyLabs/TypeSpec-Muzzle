@@ -22,5 +22,6 @@
   },
   "workspaces": [
     "@binkylabs/muzzle"
-  ]
+  ],
+  "private": true
 }
