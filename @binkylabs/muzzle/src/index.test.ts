@@ -69,7 +69,7 @@ model Foo {
     const program = await compile(NodeHost, testFilePath, options);
 
     // Apply suppressions
-    await suppressEverything(program);
+    await suppressEverything(program, {message: "Auto-suppressed warnings non-applicable rules during import."});
 
     // Format the file
     const sourceCode = await NodeHost.readFile(testFilePath);

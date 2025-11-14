@@ -16,9 +16,10 @@ import { findSuppressTarget } from "./typespec-imports.js";
 /**
  * Adds suppress directives for all warnings in the TypeSpec program.
  * @param p The TypeSpec program
+ * @param options Options for suppressing warnings
  * @returns A promise that resolves when suppressions have been applied
  */
-export async function suppressEverything(p: Program) {
+export async function suppressEverything(p: Program, options: Partial<Omit<SuppressionOptions, "entryPoint" | "ruleSets">> = {}) {
   const codeFixes = Array.from(
     Map.groupBy(
       p.diagnostics
@@ -37,7 +38,7 @@ export async function suppressEverything(p: Program) {
             fix: createSuppressCodeFix(
               diag.target as DiagnosticTarget,
               diag.code,
-              "Auto-suppressed warnings non-applicable rules during import."
+              options.message || "Warnings auto-suppressed by @binkylabs/muzzle.",
             ),
           };
         }),
@@ -54,33 +55,36 @@ async function formatSourceFile(filePath: string) {
   const formattedSource = await formatTypeSpec(sourceCode.text);
   await NodeHost.writeFile(filePath, formattedSource);
 }
-
-export async function parseTypeSpecAndSuppressEverything(entryPoint: string, ruleSets: `${string}/${string}`[]) {
-  if (ruleSets.length === 0) {
+/**
+ * Parses a TypeSpec program from the given entry point and applies suppressions for all warnings.
+ * @param options Options for suppressing warnings
+ */
+export async function parseTypeSpecAndSuppressEverything(options: SuppressionOptions) {
+  if (options.ruleSets.length === 0) {
     throw new Error("At least one rule set must be provided.");
   }
 
-  if (!entryPoint) {
+  if (!options.entryPoint) {
     throw new Error("A valid TypeSpec entry point must be provided.");
   }
 
-  if (!existsSync(entryPoint)) {
-    throw new Error(`Error: Entry file not found at path: ${entryPoint}`);
+  if (!existsSync(options.entryPoint)) {
+    throw new Error(`Error: Entry file not found at path: ${options.entryPoint}`);
   }
 
   // Load TypeSpec config (optional, for full project context)
-  const [options, _] = await resolveCompilerOptions(NodeHost, {
+  const [compilerOptions, _] = await resolveCompilerOptions(NodeHost, {
     cwd: process.cwd(),
-    entrypoint: entryPoint,
+    entrypoint: options.entryPoint,
     overrides: {
       linter: {
-        extends: ruleSets,
+        extends: options.ruleSets,
       },
     },
   });
 
   // Create the TypeSpec program
-  const program = await compile(NodeHost, entryPoint, options);
+  const program = await compile(NodeHost, options.entryPoint, compilerOptions);
 
   if (
     program.diagnostics.some(
@@ -93,10 +97,20 @@ export async function parseTypeSpecAndSuppressEverything(entryPoint: string, rul
     process.exit(1);
   }
 
-  await suppressEverything(program);
+  await suppressEverything(program, options);
 
   const sourceFiles = program.sourceFiles
     .keys()
     .filter((f) => !f.includes("node_modules"));
   await Promise.all(sourceFiles.map(formatSourceFile));
+}
+
+/** Options for suppressing TypeSpec diagnostics */
+export interface SuppressionOptions {
+  /** The entry point file for the TypeSpec program */
+  entryPoint: string;
+  /** The rule sets to apply. At least one rule set must be provided. */
+  ruleSets: `${string}/${string}`[];
+  /** The message to include with each suppression directive */
+  message?: string;
 }

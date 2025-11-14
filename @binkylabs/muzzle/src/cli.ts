@@ -1,5 +1,5 @@
 import { resolvePath } from "@typespec/compiler";
-import { parseTypeSpecAndSuppressEverything } from "./index.js";
+import { parseTypeSpecAndSuppressEverything, type SuppressionOptions } from "./index.js";
 
 function showHelp() {
   console.log(`
@@ -13,20 +13,20 @@ Arguments:
 
 Options:
   -r, --rule-set <ruleset>  Specify a rule set to apply (can be used multiple times)
+  -m, --message <message>   Suppression message to add to all suppressions
   -h, --help                Show this help message
 
 Examples:
   muzzle main.tsp --rule-set "@typespec/http/recommended"
   muzzle main.tsp -r "@typespec/http/recommended" -r "@typespec/openapi/recommended"
+  muzzle main.tsp -r "@typespec/http/recommended" -m "Suppressing existing violations"
 `);
 }
 
-function parseCliArguments(args: string[]): {
-  entryPoint: string | undefined;
-  ruleSets: `${string}/${string}`[];
-} {
+function parseCliArguments(args: string[]): SuppressionOptions {
   let entryPoint: string | undefined;
   const ruleSets: `${string}/${string}`[] = [];
+  let message: string | undefined;
 
   for (let i = 0; i < args.length; ) {
     const arg = args[i];
@@ -42,6 +42,14 @@ function parseCliArguments(args: string[]): {
       }
       ruleSets.push(ruleSet as `${string}/${string}`);
       i += 2; // Skip both the flag and its value
+    } else if (arg === "--message" || arg === "-m") {
+      const messageValue = args[i + 1];
+      if (!messageValue || messageValue.startsWith("-")) {
+        console.error(`Error: ${arg} requires a value`);
+        process.exit(1);
+      }
+      message = messageValue;
+      i += 2; // Skip both the flag and its value
     } else if (arg.startsWith("-")) {
       console.error(`Error: Unknown argument: ${arg}`);
       process.exit(1);
@@ -54,13 +62,13 @@ function parseCliArguments(args: string[]): {
     }
   }
 
-  return { entryPoint, ruleSets };
+  return { entryPoint: entryPoint || "", ruleSets, message };
 }
 
-const { entryPoint, ruleSets } = parseCliArguments(process.argv.slice(2));
+const options = parseCliArguments(process.argv.slice(2));
 
 try {
-  await parseTypeSpecAndSuppressEverything(entryPoint!, ruleSets);
+  await parseTypeSpecAndSuppressEverything(options);
 } catch (err) {
   console.error("An error occurred while parsing TypeSpec:", err);
   process.exit(1);
