@@ -102,12 +102,42 @@ async function parseTypeSpec(entryPoint: string, ruleSets: `${string}/${string}`
   await Promise.all(sourceFiles.map(formatSourceFile));
 }
 
+function parseCliArguments(args: string[]): {
+  entryPoint: string | undefined;
+  ruleSets: `${string}/${string}`[];
+} {
+  let entryPoint: string | undefined;
+  const ruleSets: `${string}/${string}`[] = [];
+
+  for (let i = 0; i < args.length; ) {
+    const arg = args[i];
+    
+    if (arg === "--rule-set" || arg === "-r") {
+      const ruleSet = args[i + 1];
+      if (!ruleSet || ruleSet.startsWith("-")) {
+        console.error(`Error: ${arg} requires a value`);
+        process.exit(1);
+      }
+      ruleSets.push(ruleSet as `${string}/${string}`);
+      i += 2; // Skip both the flag and its value
+    } else if (arg.startsWith("-")) {
+      console.error(`Error: Unknown argument: ${arg}`);
+      process.exit(1);
+    } else {
+      // First non-flag argument is the entry point
+      if (!entryPoint) {
+        entryPoint = resolvePath(arg);
+      }
+      i++;
+    }
+  }
+
+  return { entryPoint, ruleSets };
+}
+
 // Only run CLI code when executed directly, not when imported
 if (import.meta.url === `file://${process.argv[1]}`.replaceAll("\\", "/")) {
-  // Path to your TypeSpec file or project
-  const entryPoint = process.argv[2] ? resolvePath(process.argv[2]) : undefined;
-
-  const ruleSets: `${string}/${string}`[] = [];
+  const { entryPoint, ruleSets } = parseCliArguments(process.argv.slice(2));
 
   try {
     await parseTypeSpec(entryPoint!, ruleSets);
