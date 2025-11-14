@@ -102,6 +102,26 @@ async function parseTypeSpec(entryPoint: string, ruleSets: `${string}/${string}`
   await Promise.all(sourceFiles.map(formatSourceFile));
 }
 
+function showHelp() {
+  console.log(`
+Usage: typespec-muzzle <entrypoint> [options]
+
+Important:
+  The rule sets package must be installed in your project or globally for muzzle to work correctly.
+
+Arguments:
+  <entrypoint>              Path to the TypeSpec entry file
+
+Options:
+  -r, --rule-set <ruleset>  Specify a rule set to apply (can be used multiple times)
+  -h, --help                Show this help message
+
+Examples:
+  typespec-muzzle main.tsp --rule-set "@typespec/http/recommended"
+  typespec-muzzle main.tsp -r "@typespec/http/recommended" -r "@typespec/openapi/recommended"
+`);
+}
+
 function parseCliArguments(args: string[]): {
   entryPoint: string | undefined;
   ruleSets: `${string}/${string}`[];
@@ -112,7 +132,10 @@ function parseCliArguments(args: string[]): {
   for (let i = 0; i < args.length; ) {
     const arg = args[i];
     
-    if (arg === "--rule-set" || arg === "-r") {
+    if (arg === "--help" || arg === "-h") {
+      showHelp();
+      process.exit(0);
+    } else if (arg === "--rule-set" || arg === "-r") {
       const ruleSet = args[i + 1];
       if (!ruleSet || ruleSet.startsWith("-")) {
         console.error(`Error: ${arg} requires a value`);
