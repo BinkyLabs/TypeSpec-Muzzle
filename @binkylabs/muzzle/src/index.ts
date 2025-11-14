@@ -14,7 +14,7 @@ import {
 
 import { findSuppressTarget } from "./typespec-imports.js";
 
-async function suppressEverything(p: Program) {
+export async function suppressEverything(p: Program) {
   const codeFixes = Array.from(
     Map.groupBy(
       p.diagnostics
@@ -45,28 +45,13 @@ async function suppressEverything(p: Program) {
   await applyCodeFixes(p.host, codeFixes);
 }
 
-// Path to your TypeSpec file or project
-const entryPoint = resolvePath(
-  process.argv[2]
-);
-
-if (!entryPoint) {
-  console.error("Error: Please provide a valid TypeSpec file path.");
-  process.exit(1);
-}
-
-if (!existsSync(entryPoint)) {
-  console.error(`Error: Entry file not found at path: ${entryPoint}`);
-  process.exit(1);
-}
-
 async function formatSourceFile(filePath: string) {
   const sourceCode = await NodeHost.readFile(filePath);
   const formattedSource = await formatTypeSpec(sourceCode.text);
   await NodeHost.writeFile(filePath, formattedSource);
 }
 
-async function parseTypeSpec() {
+async function parseTypeSpec(entryPoint: string) {
   // Load TypeSpec config (optional, for full project context)
   const [options, _] = await resolveCompilerOptions(NodeHost, {
     cwd: process.cwd(),
@@ -100,9 +85,25 @@ async function parseTypeSpec() {
   await Promise.all(sourceFiles.map(formatSourceFile));
 }
 
-try {
-  await parseTypeSpec();
-} catch (err) {
-  console.error("An error occurred while parsing TypeSpec:", err);
-  process.exit(1);
+// Only run CLI code when executed directly, not when imported
+if (import.meta.url === `file://${process.argv[1]}`.replaceAll("\\", "/")) {
+  // Path to your TypeSpec file or project
+  const entryPoint = process.argv[2] ? resolvePath(process.argv[2]) : undefined;
+
+  if (!entryPoint) {
+    console.error("Error: Please provide a valid TypeSpec file path.");
+    process.exit(1);
+  }
+
+  if (!existsSync(entryPoint)) {
+    console.error(`Error: Entry file not found at path: ${entryPoint}`);
+    process.exit(1);
+  }
+
+  try {
+    await parseTypeSpec(entryPoint);
+  } catch (err) {
+    console.error("An error occurred while parsing TypeSpec:", err);
+    process.exit(1);
+  }
 }
