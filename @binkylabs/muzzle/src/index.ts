@@ -1,4 +1,4 @@
-import { existsSync } from "fs";
+import { existsSync } from "node:fs";
 import {
   compile,
   createSuppressCodeFix,
@@ -15,8 +15,8 @@ import {
 import { findSuppressTarget } from "./typespec-imports.js";
 
 async function suppressEverything(p: Program) {
-  const codeFixes = [
-    ...Map.groupBy(
+  const codeFixes = Array.from(
+    Map.groupBy(
       p.diagnostics
         .filter(
           (diag) => diag.severity === "warning" && diag.target !== NoTarget
@@ -39,9 +39,9 @@ async function suppressEverything(p: Program) {
         }),
       (fix) => fix.groupingKey
     )
-      .entries()
-      .map((group) => group[1][0].fix),
-  ];
+    .entries()
+    .map((group) => group[1][0].fix)
+  );
   await applyCodeFixes(p.host, codeFixes);
 }
 
@@ -91,8 +91,13 @@ async function parseTypeSpec() {
 
   const sourceFiles = program.sourceFiles
     .keys()
-    .filter((f) => f.indexOf("node_modules") === -1);
+    .filter((f) => !f.includes("node_modules"));
   await Promise.all(sourceFiles.map(formatSourceFile));
 }
 
-parseTypeSpec().catch(console.error);
+try {
+  await parseTypeSpec();
+} catch (err) {
+  console.error("An error occurred while parsing TypeSpec:", err);
+  process.exit(1);
+}
