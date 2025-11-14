@@ -26,5 +26,12 @@
     "test": "echo \"Error: no test specified\"",
     "build": "echo \"Building the muzzle...\"",
     "lint": "echo \"Linting the muzzle...\""
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@typespec/compiler": "^1.6.0"
   }
 }
