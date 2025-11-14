@@ -56,7 +56,7 @@ async function formatSourceFile(filePath: string) {
   await NodeHost.writeFile(filePath, formattedSource);
 }
 
-async function parseTypeSpec(entryPoint: string, ruleSets: `${string}/${string}`[]) {
+export async function parseTypeSpecAndSuppressEverything(entryPoint: string, ruleSets: `${string}/${string}`[]) {
   if (ruleSets.length === 0) {
     throw new Error("At least one rule set must be provided.");
   }
@@ -163,7 +163,7 @@ if (import.meta.url === `file://${process.argv[1]}`.replaceAll("\\", "/")) {
   const { entryPoint, ruleSets } = parseCliArguments(process.argv.slice(2));
 
   try {
-    await parseTypeSpec(entryPoint!, ruleSets);
+    await parseTypeSpecAndSuppressEverything(entryPoint!, ruleSets);
   } catch (err) {
     console.error("An error occurred while parsing TypeSpec:", err);
     process.exit(1);
