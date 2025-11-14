@@ -47,8 +47,13 @@ async function suppressEverything(p: Program) {
 
 // Path to your TypeSpec file or project
 const entryPoint = resolvePath(
-  process.argv[2] ?? "./packages/importer/typespec/main.tsp"
+  process.argv[2]
 );
+
+if (!entryPoint) {
+  console.error("Error: Please provide a valid TypeSpec file path.");
+  process.exit(1);
+}
 
 if (!existsSync(entryPoint)) {
   console.error(`Error: Entry file not found at path: ${entryPoint}`);
