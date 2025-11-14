@@ -1,7 +1,7 @@
 {
   "name": "@binkylabs/muzzle",
   "version": "1.0.0-preview.1",
-  "description": "A muzzle for your TypeSpec linting rules. It’s experimental, slightly unethical, and definitely effective.",
+  "description": "A muzzle for your TypeSpec linting rules. It's experimental, slightly unethical, and definitely effective.",
   "keywords": [
     "TypeSpec",
     "CLI",
@@ -21,11 +21,12 @@
   "license": "MIT",
   "author": "Vincent Biret",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\"",
-    "build": "echo \"Building the muzzle...\"",
-    "lint": "echo \"Linting the muzzle...\""
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch",
+    "suppress": "node ./dist/src/index.js"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
@@ -33,5 +34,8 @@
   },
   "dependencies": {
     "@typespec/compiler": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
