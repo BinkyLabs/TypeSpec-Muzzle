@@ -14,6 +14,11 @@ import {
 
 import { findSuppressTarget } from "./typespec-imports.js";
 
+/**
+ * Adds suppress directives for all warnings in the TypeSpec program.
+ * @param p The TypeSpec program
+ * @returns A promise that resolves when suppressions have been applied
+ */
 export async function suppressEverything(p: Program) {
   const codeFixes = Array.from(
     Map.groupBy(
@@ -51,14 +56,26 @@ async function formatSourceFile(filePath: string) {
   await NodeHost.writeFile(filePath, formattedSource);
 }
 
-async function parseTypeSpec(entryPoint: string) {
+async function parseTypeSpec(entryPoint: string, ruleSets: `${string}/${string}`[]) {
+  if (ruleSets.length === 0) {
+    throw new Error("At least one rule set must be provided.");
+  }
+
+  if (!entryPoint) {
+    throw new Error("A valid TypeSpec entry point must be provided.");
+  }
+
+  if (!existsSync(entryPoint)) {
+    throw new Error(`Error: Entry file not found at path: ${entryPoint}`);
+  }
+
   // Load TypeSpec config (optional, for full project context)
   const [options, _] = await resolveCompilerOptions(NodeHost, {
     cwd: process.cwd(),
     entrypoint: entryPoint,
     overrides: {
       linter: {
-        extends: ["@azure-tools/typespec-azure-rulesets/data-plane"],
+        extends: ruleSets,
       },
     },
   });
@@ -90,18 +107,10 @@ if (import.meta.url === `file://${process.argv[1]}`.replaceAll("\\", "/")) {
   // Path to your TypeSpec file or project
   const entryPoint = process.argv[2] ? resolvePath(process.argv[2]) : undefined;
 
-  if (!entryPoint) {
-    console.error("Error: Please provide a valid TypeSpec file path.");
-    process.exit(1);
-  }
-
-  if (!existsSync(entryPoint)) {
-    console.error(`Error: Entry file not found at path: ${entryPoint}`);
-    process.exit(1);
-  }
+  const ruleSets: `${string}/${string}`[] = [];
 
   try {
-    await parseTypeSpec(entryPoint);
+    await parseTypeSpec(entryPoint!, ruleSets);
   } catch (err) {
     console.error("An error occurred while parsing TypeSpec:", err);
     process.exit(1);
