@@ -28,7 +28,9 @@ jobs:
       - name: Run tests
         run: npm run test
       - name: Run linter
-        run: npm run lint
+        run: npm run lint:check
+      - name: Check code formatting
+        run: npm run format:check
       - name: Pack the package
         run: npm pack
       - name: Upload artifact
