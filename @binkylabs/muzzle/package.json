@@ -1,7 +1,7 @@
 {
   "name": "@binkylabs/muzzle",
   "version": "1.0.0-preview.1",
-  "description": "A muzzle for your TypeSpec linting rules. It’s experimental, slightly unethical, and definitely effective.",
+  "description": "A muzzle for your TypeSpec linting rules. It's experimental, slightly unethical, and definitely effective.",
   "keywords": [
     "TypeSpec",
     "CLI",
@@ -21,10 +21,36 @@
   "license": "MIT",
   "author": "Vincent Biret",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\"",
-    "build": "echo \"Building the muzzle...\"",
-    "lint": "echo \"Linting the muzzle...\""
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch",
+    "suppress": "node ./dist/src/index.js",
+    "lint:check": "eslint ./src/*.ts",
+    "format:check": "prettier ./src/*.ts --check",
+    "lint": "eslint ./src/*.ts --fix",
+    "format": "prettier ./src/*.ts --write"
+  },
+  "devDependencies": {
+    "@azure-tools/typespec-azure-rulesets": "^0.62.0",
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.47.0",
+    "vitest": "^4.0.9"
+  },
+  "dependencies": {
+    "@typespec/compiler": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "private": false,
+  "bin": {
+    "muzzle": "./dist/src/cli.js"
   }
 }

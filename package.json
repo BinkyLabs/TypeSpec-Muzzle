@@ -18,9 +18,13 @@
     "test": "npm --workspace @binkylabs/muzzle run test",
     "build": "npm --workspace @binkylabs/muzzle run build",
     "lint": "npm --workspace @binkylabs/muzzle run lint",
+    "format": "npm --workspace @binkylabs/muzzle run format",
+    "lint:check": "npm --workspace @binkylabs/muzzle run lint:check",
+    "format:check": "npm --workspace @binkylabs/muzzle run format:check",
     "pack": "npm --workspace @binkylabs/muzzle pack"
   },
   "workspaces": [
     "@binkylabs/muzzle"
-  ]
+  ],
+  "private": true
 }

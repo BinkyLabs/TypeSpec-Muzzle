@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
       - name: Build the project
@@ -27,7 +28,9 @@ jobs:
       - name: Run tests
         run: npm run test
       - name: Run linter
-        run: npm run lint
+        run: npm run lint:check
+      - name: Check code formatting
+        run: npm run format:check
       - name: Pack the package
         run: npm pack
       - name: Upload artifact
@@ -50,11 +53,16 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
       - name: Install dependencies
         run: npm ci
       - name: Build the project
         run: npm run build
       - run: npm install npm@11 -g # Use npm@11 to publish with OIDC
+      - run: |
+          cp LICENSE @binkylabs/muzzle/ -Verbose
+          cp README.md @binkylabs/muzzle/ -Verbose
+          cp CHANGELOG.md @binkylabs/muzzle/ -Verbose
+        shell: pwsh
       - name: Publish package on NPM
-        working-directory: typescript
-        run: npm publish --access public --provenance
+        run: npm publish --access public --provenance --workspaces
