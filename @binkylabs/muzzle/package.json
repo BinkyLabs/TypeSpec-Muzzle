@@ -28,10 +28,10 @@
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -p tsconfig.json --watch",
     "suppress": "node ./dist/src/index.js",
-    "lint:check": "eslint './src/**/*.ts' --check",
-    "format:check": "prettier './src/**/*.ts' --check",
-    "lint": "eslint './src/**/*.ts' --fix",
-    "format": "prettier './src/**/*.ts' --write"
+    "lint:check": "eslint ./src/*.ts",
+    "format:check": "prettier ./src/*.ts --check",
+    "lint": "eslint ./src/*.ts --fix",
+    "format": "prettier ./src/*.ts --write"
   },
   "devDependencies": {
     "@azure-tools/typespec-azure-rulesets": "^0.62.0",
