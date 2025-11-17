@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { resolvePath } from "@typespec/compiler";
 import {
   parseTypeSpecAndSuppressEverything,
