@@ -11,14 +11,14 @@
   "include-component-in-tag": false,
   "include-v-in-tag": true,
   "draft": false,
-  "prerelease": true,
-  "versioning": "prerelease",
-  "prerelease-type": "preview",
   "packages": {
     "@binkylabs/muzzle": {
       "package-name": "@binkylabs/muzzle",
       "path": "@binkylabs/muzzle",
-      "changelog-path": "CHANGELOG.md"
+      "changelog-path": "CHANGELOG.md",
+      "prerelease": true,
+      "versioning": "prerelease",
+      "prerelease-type": "preview"
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
