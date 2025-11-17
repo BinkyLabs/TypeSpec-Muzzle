@@ -51,6 +51,6 @@
   },
   "private": false,
   "bin": {
-    "muzzle": "./dist/src/cli.js"
+    "muzzle": "dist/src/cli.js"
   }
 }
