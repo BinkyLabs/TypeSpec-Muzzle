@@ -1,5 +1,8 @@
 import { resolvePath } from "@typespec/compiler";
-import { parseTypeSpecAndSuppressEverything, type SuppressionOptions } from "./index.js";
+import {
+  parseTypeSpecAndSuppressEverything,
+  type SuppressionOptions,
+} from "./index.js";
 
 function showHelp() {
   console.log(`

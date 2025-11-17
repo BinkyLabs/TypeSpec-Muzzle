@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { rmSync, writeFileSync, readFileSync, mkdirSync, existsSync } from "node:fs";
+import {
+  rmSync,
+  writeFileSync,
+  readFileSync,
+  mkdirSync,
+  existsSync,
+} from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { suppressEverything } from "./index.js";
@@ -21,7 +27,7 @@ describe("suppressEverything", () => {
     const projectRoot = resolve(__dirname, "..", "..");
     testDir = join(projectRoot, "test-fixtures");
     testFilePath = join(testDir, "test.tsp");
-    
+
     // Create test directory if it doesn't exist
     if (!existsSync(testDir)) {
       mkdirSync(testDir, { recursive: true });
@@ -69,7 +75,9 @@ model Foo {
     const program = await compile(NodeHost, testFilePath, options);
 
     // Apply suppressions
-    await suppressEverything(program, {message: "Auto-suppressed warnings non-applicable rules during import."});
+    await suppressEverything(program, {
+      message: "Auto-suppressed warnings non-applicable rules during import.",
+    });
 
     // Format the file
     const sourceCode = await NodeHost.readFile(testFilePath);

@@ -7,7 +7,7 @@ import {
 import { getNodeForTarget, Node, SyntaxKind } from "@typespec/compiler/ast";
 
 export function findSuppressTarget(
-  target: DiagnosticTarget
+  target: DiagnosticTarget,
 ): SourceLocation | undefined {
   if ("file" in target) {
     return target;

@@ -19,16 +19,19 @@ import { findSuppressTarget } from "./typespec-imports.js";
  * @param options Options for suppressing warnings
  * @returns A promise that resolves when suppressions have been applied
  */
-export async function suppressEverything(p: Program, options: Partial<Omit<SuppressionOptions, "entryPoint" | "ruleSets">> = {}) {
+export async function suppressEverything(
+  p: Program,
+  options: Partial<Omit<SuppressionOptions, "entryPoint" | "ruleSets">> = {},
+) {
   const codeFixes = Array.from(
     Map.groupBy(
       p.diagnostics
         .filter(
-          (diag) => diag.severity === "warning" && diag.target !== NoTarget
+          (diag) => diag.severity === "warning" && diag.target !== NoTarget,
         )
         .map((diag) => {
           const suppressTarget = findSuppressTarget(
-            diag.target as DiagnosticTarget
+            diag.target as DiagnosticTarget,
           );
           const groupingKey = suppressTarget
             ? `${diag.code}-${suppressTarget.file.path}-${suppressTarget.pos}-${suppressTarget.end}`
@@ -38,14 +41,15 @@ export async function suppressEverything(p: Program, options: Partial<Omit<Suppr
             fix: createSuppressCodeFix(
               diag.target as DiagnosticTarget,
               diag.code,
-              options.message || "Warnings auto-suppressed by @binkylabs/muzzle.",
+              options.message ||
+                "Warnings auto-suppressed by @binkylabs/muzzle.",
             ),
           };
         }),
-      (fix) => fix.groupingKey
+      (fix) => fix.groupingKey,
     )
-    .entries()
-    .map((group) => group[1][0].fix)
+      .entries()
+      .map((group) => group[1][0].fix),
   );
   await applyCodeFixes(p.host, codeFixes);
 }
@@ -59,7 +63,9 @@ async function formatSourceFile(filePath: string) {
  * Parses a TypeSpec program from the given entry point and applies suppressions for all warnings.
  * @param options Options for suppressing warnings
  */
-export async function parseTypeSpecAndSuppressEverything(options: SuppressionOptions) {
+export async function parseTypeSpecAndSuppressEverything(
+  options: SuppressionOptions,
+) {
   if (options.ruleSets.length === 0) {
     throw new Error("At least one rule set must be provided.");
   }
@@ -69,7 +75,9 @@ export async function parseTypeSpecAndSuppressEverything(options: SuppressionOpt
   }
 
   if (!existsSync(options.entryPoint)) {
-    throw new Error(`Error: Entry file not found at path: ${options.entryPoint}`);
+    throw new Error(
+      `Error: Entry file not found at path: ${options.entryPoint}`,
+    );
   }
 
   // Load TypeSpec config (optional, for full project context)
@@ -88,11 +96,11 @@ export async function parseTypeSpecAndSuppressEverything(options: SuppressionOpt
 
   if (
     program.diagnostics.some(
-      (d) => d.severity === "error" && d.code === "unknown-rule-set"
+      (d) => d.severity === "error" && d.code === "unknown-rule-set",
     )
   ) {
     console.error(
-      "Error: Unknown rule set. Please check your linter configuration."
+      "Error: Unknown rule set. Please check your linter configuration.",
     );
     process.exit(1);
   }
