@@ -66,4 +66,4 @@ jobs:
           Copy-Item CHANGELOG.md @binkylabs/muzzle/ -Verbose
         shell: pwsh
       - name: Publish package on NPM
-        run: npm publish --access public --provenance --workspaces --tag preview
+        run: npm publish --access public --provenance --workspaces

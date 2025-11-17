@@ -15,10 +15,7 @@
     "@binkylabs/muzzle": {
       "package-name": "@binkylabs/muzzle",
       "path": "@binkylabs/muzzle",
-      "changelog-path": "CHANGELOG.md",
-      "prerelease": true,
-      "versioning": "prerelease",
-      "prerelease-type": "preview"
+      "changelog-path": "CHANGELOG.md"
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
