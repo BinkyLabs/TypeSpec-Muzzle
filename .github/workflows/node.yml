@@ -61,9 +61,9 @@ jobs:
         run: npm run build
       - run: npm install npm@11 -g # Use npm@11 to publish with OIDC
       - run: |
-          cp LICENSE @binkylabs/muzzle/ -Verbose
-          cp README.md @binkylabs/muzzle/ -Verbose
-          cp CHANGELOG.md @binkylabs/muzzle/ -Verbose
+          Copy-Item LICENSE @binkylabs/muzzle/ -Verbose
+          Copy-Item README.md @binkylabs/muzzle/ -Verbose
+          Copy-Item CHANGELOG.md @binkylabs/muzzle/ -Verbose
         shell: pwsh
       - name: Publish package on NPM
         run: npm publish --access public --provenance --workspaces
