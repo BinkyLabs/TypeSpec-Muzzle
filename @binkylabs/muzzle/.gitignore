@@ -143,7 +143,7 @@ vite.config.ts.timestamp-*
 # Test fixtures
 test-fixtures/
 
-# those are copied when publishing to npm
+# those are copied when publishing to NPM
 LICENSE
 README.md
 CHANGELOG.md
