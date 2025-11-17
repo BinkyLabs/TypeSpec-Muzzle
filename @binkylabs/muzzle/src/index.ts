@@ -73,7 +73,7 @@ export async function parseTypeSpecAndSuppressEverything(options: SuppressionOpt
   }
 
   // Load TypeSpec config (optional, for full project context)
-  const [compilerOptions, _] = await resolveCompilerOptions(NodeHost, {
+  const [compilerOptions] = await resolveCompilerOptions(NodeHost, {
     cwd: process.cwd(),
     entrypoint: options.entryPoint,
     overrides: {

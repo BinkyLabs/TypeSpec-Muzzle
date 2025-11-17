@@ -56,7 +56,7 @@ model Foo {
     writeFileSync(testFilePath, inputTypeSpec);
 
     // Compile the TypeSpec program with linting rules
-    const [options, _] = await resolveCompilerOptions(NodeHost, {
+    const [options] = await resolveCompilerOptions(NodeHost, {
       cwd: testDir,
       entrypoint: testFilePath,
       overrides: {
