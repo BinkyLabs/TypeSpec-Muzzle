@@ -152,3 +152,4 @@ vitest.config.ts
 tsconfig.json
 *.test.*
 src/
+eslint.config.mjs
