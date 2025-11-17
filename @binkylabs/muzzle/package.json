@@ -1,6 +1,6 @@
 {
   "name": "@binkylabs/muzzle",
-  "version": "1.0.0-preview.1",
+  "version": "1.0.0-preview.2",
   "description": "A muzzle for your TypeSpec linting rules. It's experimental, slightly unethical, and definitely effective.",
   "keywords": [
     "TypeSpec",
