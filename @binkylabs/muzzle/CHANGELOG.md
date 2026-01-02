@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.1.0...v1.1.1) (2026-01-02)
+
+
+### Bug Fixes
+
+* **inline-suppresser:** handle model 'is' keyword correctly ([1b8ac59](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/1b8ac5990df3948a33d99bfc1501ba88f21eef5c))
+* place suppressions before model keyword when using `is` expression ([c3b9d5b](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/c3b9d5bfe84b57875941df575e047b51133a84e5))
+
 ## [1.1.0](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.0.0...v1.1.0) (2025-11-17)
 
 
