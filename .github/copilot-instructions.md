@@ -27,13 +27,13 @@ Always use conventional commits format when creating commits. Follow this struct
 
 ### Scope
 
-The scope should indicate the package or area affected (e.g., `identity-emitter`, `openai-typespec`, `importer`, `inline-suppresser`).
+The scope should indicate the package or area affected (e.g., `muzzle`).
 
 ### Examples
 
 ```
-feat(openai-typespec): add support for video endpoints
-fix(identity-emitter): correct enum generation for renamed values
+feat(muzzle): add support for video endpoints
+fix(muzzle): correct enum generation for renamed values
 docs(README): update installation instructions
 ci(release): configure automated release workflow
 ```
