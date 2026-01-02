@@ -16,6 +16,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npm --workspace @binkylabs/muzzle run test",
+    "test:watch": "npm --workspace @binkylabs/muzzle run test:watch",
     "build": "npm --workspace @binkylabs/muzzle run build",
     "lint": "npm --workspace @binkylabs/muzzle run lint",
     "format": "npm --workspace @binkylabs/muzzle run format",
