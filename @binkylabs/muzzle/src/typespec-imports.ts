@@ -37,7 +37,7 @@ function findSuppressNode(node: Node): Node {
       // Check if this node is the 'is' or 'extends' expression of a ModelStatement
       // If so, move up to the parent statement to place suppression before 'model' keyword
       if (node.parent && node.parent.kind === SyntaxKind.ModelStatement) {
-        const modelParent = node.parent as ModelStatementNode;
+        const modelParent = node.parent;
         if (modelParent.is === node || modelParent.extends === node) {
           return node.parent;
         }
