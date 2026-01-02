@@ -14,5 +14,6 @@
     /* Linting */
     "strict": true
   },
-  "include": ["src", "test", "vitest.d.ts"]
+  "include": ["src", "vitest.d.ts"],
+  "exclude": ["**/*.test.ts", "test-fixtures"]
 }
