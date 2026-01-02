@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import {
   compile,
+  createSuppressCodeFix,
   DiagnosticTarget,
   NodeHost,
   NoTarget,
@@ -8,39 +9,9 @@ import {
   resolveCompilerOptions,
   applyCodeFixes,
   formatTypeSpec,
-  CodeFix,
-  SourceLocation,
 } from "@typespec/compiler";
 
 import { findSuppressTarget } from "./typespec-imports.js";
-
-/** A fix item with a grouping key and the actual code fix */
-interface FixItem {
-  groupingKey: string;
-  fix: CodeFix;
-}
-
-/**
- * Creates a custom suppress code fix that places the suppression at a specific location.
- * @param suppressTarget The location where the suppression should be placed
- * @param code The diagnostic code to suppress
- * @param message The suppression message
- * @returns A CodeFix that adds the suppression directive
- */
-function createCustomSuppressCodeFix(
-  suppressTarget: SourceLocation,
-  code: string,
-  message: string,
-): CodeFix {
-  return {
-    id: "suppress-custom",
-    label: `Suppress warning: "${code}"`,
-    fix: (context) => {
-      const directive = `#suppress "${code}" "${message}"\n`;
-      return context.prependText(suppressTarget, directive);
-    },
-  };
-}
 
 /**
  * Adds suppress directives for all warnings in the TypeSpec program.
@@ -52,36 +23,34 @@ export async function suppressEverything(
   p: Program,
   options: Partial<Omit<SuppressionOptions, "entryPoint" | "ruleSets">> = {},
 ) {
-  const fixes = p.diagnostics
-    .filter((diag) => diag.severity === "warning" && diag.target !== NoTarget)
-    .map((diag) => {
-      const suppressTarget = findSuppressTarget(
-        diag.target as DiagnosticTarget,
-      );
-      if (!suppressTarget) {
-        return null;
-      }
-      const groupingKey = `${diag.code}-${suppressTarget.file.path}-${suppressTarget.pos}-${suppressTarget.end}`;
-      return {
-        groupingKey: groupingKey,
-        fix: createCustomSuppressCodeFix(
-          suppressTarget,
-          diag.code,
-          options.message || "Warnings auto-suppressed by @binkylabs/muzzle.",
-        ),
-      };
-    })
-    .filter((fix): fix is FixItem => fix !== null);
-
-  // Group fixes by groupingKey and take first fix from each group
-  const groupedFixes = new Map<string, FixItem>();
-  for (const fix of fixes) {
-    if (!groupedFixes.has(fix.groupingKey)) {
-      groupedFixes.set(fix.groupingKey, fix);
-    }
-  }
-
-  const codeFixes = Array.from(groupedFixes.values()).map((item) => item.fix);
+  const codeFixes = Array.from(
+    Map.groupBy(
+      p.diagnostics
+        .filter(
+          (diag) => diag.severity === "warning" && diag.target !== NoTarget,
+        )
+        .map((diag) => {
+          const suppressTarget = findSuppressTarget(
+            diag.target as DiagnosticTarget,
+          );
+          const groupingKey = suppressTarget
+            ? `${diag.code}-${suppressTarget.file.path}-${suppressTarget.pos}-${suppressTarget.end}`
+            : `no-target-${diag.code}`;
+          return {
+            groupingKey: groupingKey,
+            fix: createSuppressCodeFix(
+              diag.target as DiagnosticTarget,
+              diag.code,
+              options.message ||
+                "Warnings auto-suppressed by @binkylabs/muzzle.",
+            ),
+          };
+        }),
+      (fix) => fix.groupingKey,
+    )
+      .entries()
+      .map((group) => group[1][0].fix),
+  );
   await applyCodeFixes(p.host, codeFixes);
 }
 
@@ -138,9 +107,9 @@ export async function parseTypeSpecAndSuppressEverything(
 
   await suppressEverything(program, options);
 
-  const sourceFiles = Array.from(program.sourceFiles.keys()).filter(
-    (f) => !f.includes("node_modules"),
-  );
+  const sourceFiles = program.sourceFiles
+    .keys()
+    .filter((f) => !f.includes("node_modules"));
   await Promise.all(sourceFiles.map(formatSourceFile));
 }
 
