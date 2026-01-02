@@ -1,7 +1,6 @@
 import { existsSync } from "node:fs";
 import {
   compile,
-  createSuppressCodeFix,
   DiagnosticTarget,
   NodeHost,
   NoTarget,
@@ -14,6 +13,12 @@ import {
 } from "@typespec/compiler";
 
 import { findSuppressTarget } from "./typespec-imports.js";
+
+/** A fix item with a grouping key and the actual code fix */
+interface FixItem {
+  groupingKey: string;
+  fix: CodeFix;
+}
 
 /**
  * Creates a custom suppress code fix that places the suppression at a specific location.
@@ -66,10 +71,10 @@ export async function suppressEverything(
         ),
       };
     })
-    .filter((fix) => fix !== null);
+    .filter((fix): fix is FixItem => fix !== null);
 
   // Group fixes by groupingKey and take first fix from each group
-  const groupedFixes = new Map<string, NonNullable<(typeof fixes)[0]>>();
+  const groupedFixes = new Map<string, FixItem>();
   for (const fix of fixes) {
     if (!groupedFixes.has(fix.groupingKey)) {
       groupedFixes.set(fix.groupingKey, fix);
