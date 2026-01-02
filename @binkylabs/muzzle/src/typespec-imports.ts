@@ -8,7 +8,6 @@ import {
   getNodeForTarget,
   Node,
   SyntaxKind,
-  ModelStatementNode,
 } from "@typespec/compiler/ast";
 
 export function findSuppressTarget(
