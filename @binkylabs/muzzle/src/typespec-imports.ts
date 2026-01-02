@@ -4,11 +4,7 @@ import {
   SourceLocation,
 } from "@typespec/compiler";
 
-import {
-  getNodeForTarget,
-  Node,
-  SyntaxKind,
-} from "@typespec/compiler/ast";
+import { getNodeForTarget, Node, SyntaxKind } from "@typespec/compiler/ast";
 
 export function findSuppressTarget(
   target: DiagnosticTarget,
