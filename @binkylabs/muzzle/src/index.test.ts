@@ -90,4 +90,62 @@ model Foo {
     // Verify the output matches expected
     expect(result.trim()).toBe(expectedOutput.trim());
   });
+
+  it("should add suppress directives before model keyword when using 'is' keyword", async () => {
+    const inputTypeSpec = `namespace OpenAI;
+
+model Foo {
+}
+
+model Bar {
+}
+
+model FooBarArray is (Foo | Bar)[];
+`;
+
+    const expectedOutput = `namespace OpenAI;
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model Foo {}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model Bar {}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
+model FooBarArray is (Foo | Bar)[];
+`;
+
+    // Write the test TypeSpec file
+    writeFileSync(testFilePath, inputTypeSpec);
+
+    // Compile the TypeSpec program with linting rules
+    const [options] = await resolveCompilerOptions(NodeHost, {
+      cwd: testDir,
+      entrypoint: testFilePath,
+      overrides: {
+        linter: {
+          extends: ["@azure-tools/typespec-azure-rulesets/data-plane"],
+        },
+      },
+    });
+
+    const program = await compile(NodeHost, testFilePath, options);
+
+    // Apply suppressions
+    await suppressEverything(program, {
+      message: "Auto-suppressed warnings non-applicable rules during import.",
+    });
+
+    // Format the file
+    const sourceCode = await NodeHost.readFile(testFilePath);
+    const formattedSource = await formatTypeSpec(sourceCode.text);
+    await NodeHost.writeFile(testFilePath, formattedSource);
+
+    // Read the modified file
+    const result = readFileSync(testFilePath, "utf-8");
+
+    // Verify the output matches expected
+    expect(result.trim()).toBe(expectedOutput.trim());
+  });
 });
