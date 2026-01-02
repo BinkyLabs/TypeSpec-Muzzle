@@ -27,16 +27,11 @@ function findSuppressNode(node: Node): Node {
     case SyntaxKind.TypeReference:
     case SyntaxKind.UnionExpression:
     case SyntaxKind.ModelExpression:
+    case SyntaxKind.ArrayExpression:
       return findSuppressNode(node.parent!);
+    case SyntaxKind.ModelStatement:
+      return node.id;
     default:
-      // Check if this node is the 'is' or 'extends' expression of a ModelStatement
-      // If so, move up to the parent statement to place suppression before 'model' keyword
-      if (node.parent && node.parent.kind === SyntaxKind.ModelStatement) {
-        const modelParent = node.parent;
-        if (modelParent.is === node || modelParent.extends === node) {
-          return node.parent;
-        }
-      }
       return node;
   }
 }
