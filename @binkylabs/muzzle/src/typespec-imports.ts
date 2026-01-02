@@ -4,7 +4,12 @@ import {
   SourceLocation,
 } from "@typespec/compiler";
 
-import { getNodeForTarget, Node, SyntaxKind } from "@typespec/compiler/ast";
+import {
+  getNodeForTarget,
+  Node,
+  SyntaxKind,
+  ModelStatementNode,
+} from "@typespec/compiler/ast";
 
 export function findSuppressTarget(
   target: DiagnosticTarget,
@@ -29,19 +34,12 @@ function findSuppressNode(node: Node): Node {
     case SyntaxKind.ModelExpression:
       return findSuppressNode(node.parent!);
     default:
-      // Check if this node is the 'is' or 'extends' expression of a ModelStatement or ScalarStatement
-      // If so, move up to the parent statement to place suppression before 'model' or 'scalar' keyword
-      if (node.parent) {
-        if (node.parent.kind === SyntaxKind.ModelStatement) {
-          const modelParent = node.parent as any;
-          if (modelParent.is === node || modelParent.extends === node) {
-            return node.parent;
-          }
-        } else if (node.parent.kind === SyntaxKind.ScalarStatement) {
-          const scalarParent = node.parent as any;
-          if (scalarParent.extends === node) {
-            return node.parent;
-          }
+      // Check if this node is the 'is' or 'extends' expression of a ModelStatement
+      // If so, move up to the parent statement to place suppression before 'model' keyword
+      if (node.parent && node.parent.kind === SyntaxKind.ModelStatement) {
+        const modelParent = node.parent as ModelStatementNode;
+        if (modelParent.is === node || modelParent.extends === node) {
+          return node.parent;
         }
       }
       return node;
