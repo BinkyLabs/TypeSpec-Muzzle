@@ -94,26 +94,31 @@ model Foo {
   it("should add suppress directives before model keyword when using 'is' keyword", async () => {
     const inputTypeSpec = `namespace OpenAI;
 
+/** A Foo model */
 model Foo {
 }
 
+/** A Bar model */
 model Bar {
 }
 
-model FooBarArray is (Foo | Bar)[];
+/** A model that is a union of Foo and Bar in an array */
+model FooBarArray
+  is (Foo | Bar)[];
 `;
 
     const expectedOutput = `namespace OpenAI;
 
-#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+/** A Foo model */
 model Foo {}
 
-#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+/** A Bar model */
 model Bar {}
 
-#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+/** A model that is a union of Foo and Bar in an array */
 #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
-model FooBarArray is (Foo | Bar)[];
+model FooBarArray
+  is (Foo | Bar)[];
 `;
 
     // Write the test TypeSpec file
