@@ -1,8 +1,7 @@
 import { existsSync } from "node:fs";
 import {
   compile as typespecCompile,
-  createSuppressCodeFix,
-  DiagnosticTarget,
+  createSuppressCodeFixes,
   NodeHost,
   NoTarget,
   Program,
@@ -11,8 +10,6 @@ import {
   formatTypeSpec,
   CompilerOptions,
 } from "@typespec/compiler";
-
-import { findSuppressTarget } from "./typespec-imports.js";
 
 /**
  * Adds suppress directives for all warnings in the TypeSpec program.
@@ -24,34 +21,12 @@ export async function suppressEverything(
   p: Program,
   options: Partial<Omit<SuppressionOptions, "entryPoint" | "ruleSets">> = {},
 ) {
-  const codeFixes = Array.from(
-    Map.groupBy(
-      p.diagnostics
+  const codeFixes = createSuppressCodeFixes(Array.from(p.diagnostics
         .filter(
           (diag) => diag.severity === "warning" && diag.target !== NoTarget,
-        )
-        .map((diag) => {
-          const suppressTarget = findSuppressTarget(
-            diag.target as DiagnosticTarget,
-          );
-          const groupingKey = suppressTarget
-            ? `${diag.code}-${suppressTarget.file.path}-${suppressTarget.pos}-${suppressTarget.end}`
-            : `no-target-${diag.code}`;
-          return {
-            groupingKey: groupingKey,
-            fix: createSuppressCodeFix(
-              diag.target as DiagnosticTarget,
-              diag.code,
-              options.message ||
-                "Warnings auto-suppressed by @binkylabs/muzzle.",
-            ),
-          };
-        }),
-      (fix) => fix.groupingKey,
-    )
-      .entries()
-      .map((group) => group[1][0].fix),
-  );
+        )),
+        options.message ||
+                "Warnings auto-suppressed by @binkylabs/muzzle.");
   await applyCodeFixes(p.host, codeFixes);
 }
 
