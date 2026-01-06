@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.2.0...v1.2.1) (2026-01-06)
+
+
+### Bug Fixes
+
+* array, and other expressions suppression ([41fc560](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/41fc560efca75fe8cda8acf75238a0765bdbfc59))
+
 ## [1.2.0](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.1.1...v1.2.0) (2026-01-06)
 
 
