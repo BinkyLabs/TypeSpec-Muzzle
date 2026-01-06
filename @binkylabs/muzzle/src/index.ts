@@ -3,7 +3,6 @@ import {
   compile as typespecCompile,
   createSuppressCodeFixes,
   NodeHost,
-  NoTarget,
   Program,
   resolveCompilerOptions,
   applyCodeFixes,
