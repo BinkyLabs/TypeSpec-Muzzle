@@ -178,11 +178,7 @@ model Foo {
       },
     });
 
-    const oldWrite = NodeHost.writeFile;
-    NodeHost.writeFile = (path: string, content: string) => Promise.resolve();
     const program = await compile(NodeHost, testFilePath, options);
-    NodeHost.writeFile = oldWrite;
-
 
     // Apply suppressions
     await suppressEverything(program, {

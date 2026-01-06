@@ -59,6 +59,7 @@ async function compile(entryPoint: string, compilerOptions: CompilerOptions): Pr
   /* We prevent the compiler from writing files to disk by overriding the writeFile method on the NodeHost. */
   const originalWriteFile = NodeHost.writeFile;
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     NodeHost.writeFile = (_path: string, _content: string) => Promise.resolve();
     return await typespecCompile(NodeHost, entryPoint, compilerOptions);
   } finally {
