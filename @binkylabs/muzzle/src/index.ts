@@ -55,7 +55,10 @@ export async function suppressEverything(
   await applyCodeFixes(p.host, codeFixes);
 }
 
-async function compile(entryPoint: string, compilerOptions: CompilerOptions): Promise<Program> {
+async function compile(
+  entryPoint: string,
+  compilerOptions: CompilerOptions,
+): Promise<Program> {
   /* We prevent the compiler from writing files to disk by overriding the writeFile method on the NodeHost. */
   const originalWriteFile = NodeHost.writeFile;
   try {
@@ -76,7 +79,7 @@ async function formatSourceFile(filePath: string) {
 /**
  * Parses a TypeSpec program from the given entry point and applies suppressions for all warnings.
  * @param options Options for suppressing warnings
-*/
+ */
 export async function parseTypeSpecAndSuppressEverything(
   options: SuppressionOptions,
 ) {
@@ -87,14 +90,14 @@ export async function parseTypeSpecAndSuppressEverything(
   if (!options.entryPoint) {
     throw new Error("A valid TypeSpec entry point must be provided.");
   }
-  
+
   if (!existsSync(options.entryPoint)) {
     throw new Error(
       `Error: Entry file not found at path: ${options.entryPoint}`,
     );
   }
-  
-  // Load TypeSpec config (optional, for full project context)  
+
+  // Load TypeSpec config (optional, for full project context)
   const [compilerOptions] = await resolveCompilerOptions(NodeHost, {
     cwd: process.cwd(),
     entrypoint: options.entryPoint,
@@ -104,11 +107,11 @@ export async function parseTypeSpecAndSuppressEverything(
         extends: options.ruleSets,
       },
     },
-  });  
-  
+  });
+
   // Create the TypeSpec program
-  const program = await compile(options.entryPoint, compilerOptions);  
-  
+  const program = await compile(options.entryPoint, compilerOptions);
+
   if (
     program.diagnostics.some(
       (d) => d.severity === "error" && d.code === "unknown-rule-set",

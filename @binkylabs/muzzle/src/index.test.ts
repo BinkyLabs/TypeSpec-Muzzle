@@ -171,10 +171,8 @@ model Foo {
     const [options] = await resolveCompilerOptions(NodeHost, {
       cwd: testDir,
       entrypoint: testFilePath,
-      overrides: {        
-        emit: [
-          "@azure-tools/typespec-autorest",
-        ],
+      overrides: {
+        emit: ["@azure-tools/typespec-autorest"],
       },
     });
 
@@ -196,5 +194,4 @@ model Foo {
     // Verify the output matches expected
     expect(result.trim()).toBe(expectedOutput.trim());
   });
-
 });
