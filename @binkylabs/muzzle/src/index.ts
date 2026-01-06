@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import {
-  compile,
+  compile as typespecCompile,
   createSuppressCodeFix,
   DiagnosticTarget,
   NodeHost,
@@ -9,6 +9,7 @@ import {
   resolveCompilerOptions,
   applyCodeFixes,
   formatTypeSpec,
+  CompilerOptions,
 } from "@typespec/compiler";
 
 import { findSuppressTarget } from "./typespec-imports.js";
@@ -54,6 +55,22 @@ export async function suppressEverything(
   await applyCodeFixes(p.host, codeFixes);
 }
 
+async function compile(
+  entryPoint: string,
+  compilerOptions: CompilerOptions,
+): Promise<Program> {
+  /* We prevent the compiler from writing files to disk by overriding the writeFile method on the NodeHost. */
+  const originalWriteFile = NodeHost.writeFile;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    NodeHost.writeFile = (_path: string, _content: string) => Promise.resolve();
+    return await typespecCompile(NodeHost, entryPoint, compilerOptions);
+  } finally {
+    /* Restore the original writeFile method after compilation. */
+    NodeHost.writeFile = originalWriteFile;
+  }
+}
+
 async function formatSourceFile(filePath: string) {
   const sourceCode = await NodeHost.readFile(filePath);
   const formattedSource = await formatTypeSpec(sourceCode.text);
@@ -66,8 +83,8 @@ async function formatSourceFile(filePath: string) {
 export async function parseTypeSpecAndSuppressEverything(
   options: SuppressionOptions,
 ) {
-  if (options.ruleSets.length === 0) {
-    throw new Error("At least one rule set must be provided.");
+  if (options.ruleSets.length === 0 && options.emitters.length === 0) {
+    throw new Error("At least one rule set or emitter must be provided.");
   }
 
   if (!options.entryPoint) {
@@ -85,6 +102,7 @@ export async function parseTypeSpecAndSuppressEverything(
     cwd: process.cwd(),
     entrypoint: options.entryPoint,
     overrides: {
+      emit: options.emitters,
       linter: {
         extends: options.ruleSets,
       },
@@ -92,7 +110,7 @@ export async function parseTypeSpecAndSuppressEverything(
   });
 
   // Create the TypeSpec program
-  const program = await compile(NodeHost, options.entryPoint, compilerOptions);
+  const program = await compile(options.entryPoint, compilerOptions);
 
   if (
     program.diagnostics.some(
@@ -117,8 +135,10 @@ export async function parseTypeSpecAndSuppressEverything(
 export interface SuppressionOptions {
   /** The entry point file for the TypeSpec program */
   entryPoint: string;
-  /** The rule sets to apply. At least one rule set must be provided. */
+  /** The rule sets to apply. At least one rule or one emitter must be provided. */
   ruleSets: `${string}/${string}`[];
+  /** The emitters to apply. At least one rule or one emitter must be provided. */
+  emitters: string[];
   /** The message to include with each suppression directive */
   message?: string;
 }
