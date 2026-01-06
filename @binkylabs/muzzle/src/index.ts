@@ -21,10 +21,7 @@ export async function suppressEverything(
   p: Program,
   options: Partial<Omit<SuppressionOptions, "entryPoint" | "ruleSets">> = {},
 ) {
-  const codeFixes = createSuppressCodeFixes(Array.from(p.diagnostics
-        .filter(
-          (diag) => diag.severity === "warning" && diag.target !== NoTarget,
-        )),
+  const codeFixes = createSuppressCodeFixes(p.diagnostics,
         options.message ||
                 "Warnings auto-suppressed by @binkylabs/muzzle.");
   await applyCodeFixes(p.host, codeFixes);
