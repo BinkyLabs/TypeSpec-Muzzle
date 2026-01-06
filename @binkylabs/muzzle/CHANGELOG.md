@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.1.1...v1.2.0) (2026-01-06)
+
+
+### Features
+
+* **muzzle:** Add support to suppressing emitter diagnostics. ([5571cd2](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/5571cd23b893dc8e217da4eb3fc02aa8f4f55dba))
+* **muzzle:** Add support to suppressing emitter diagnostics. ([c2e3513](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/c2e35139146a4601fbcac61b25e890d4583226c5))
+
 ## [1.1.1](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.1.0...v1.1.1) (2026-01-02)
 
 
