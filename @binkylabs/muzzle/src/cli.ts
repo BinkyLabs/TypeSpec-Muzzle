@@ -17,6 +17,7 @@ Arguments:
 
 Options:
   -r, --rule-set <ruleset>  Specify a rule set to apply (can be used multiple times)
+  -e, --emitter <emitter>   Specify an emitter to apply (can be used multiple times)
   -m, --message <message>   Suppression message to add to all suppressions
   -h, --help                Show this help message
 
@@ -30,6 +31,7 @@ Examples:
 function parseCliArguments(args: string[]): SuppressionOptions {
   let entryPoint: string | undefined;
   const ruleSets: `${string}/${string}`[] = [];
+  const emitters: string[] = [];
   let message: string | undefined;
 
   for (let i = 0; i < args.length; ) {
@@ -45,6 +47,14 @@ function parseCliArguments(args: string[]): SuppressionOptions {
         process.exit(1);
       }
       ruleSets.push(ruleSet as `${string}/${string}`);
+      i += 2; // Skip both the flag and its value
+    } else if (arg === "--emitter" || arg === "-e") {
+      const emitter = args[i + 1];
+      if (!emitter || emitter.startsWith("-")) {
+        console.error(`Error: ${arg} requires a value`);
+        process.exit(1);
+      }
+      emitters.push(emitter);
       i += 2; // Skip both the flag and its value
     } else if (arg === "--message" || arg === "-m") {
       const messageValue = args[i + 1];
@@ -66,7 +76,7 @@ function parseCliArguments(args: string[]): SuppressionOptions {
     }
   }
 
-  return { entryPoint: entryPoint || "", ruleSets, message };
+  return { entryPoint: entryPoint || "", emitters, ruleSets, message };
 }
 
 const options = parseCliArguments(process.argv.slice(2));
