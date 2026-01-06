@@ -4,6 +4,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    testTimeout: 30000, // 30 seconds for slow TypeSpec compilation
+    testTimeout: 30000, // 30 seconds for slow TypeSpec compilation,
+    include: ["**/*.test.ts", "**/*.spec.ts"],
+    exclude: ["**/node_modules/**", "**/dist/**"],
   },
 });
