@@ -45,7 +45,7 @@
     "vitest": "^4.0.16"
   },
   "dependencies": {
-    "@typespec/compiler": "^1.8.0-dev.9"
+    "@typespec/compiler": "^1.8.0-dev.11"
   },
   "engines": {
     "node": ">=20.0.0"
