@@ -34,7 +34,7 @@
     "format": "prettier ./src/*.ts --write"
   },
   "devDependencies": {
-    "@azure-tools/typespec-autorest": "^0.63.1",
+    "@azure-tools/typespec-autorest": "^0.64.0",
     "@azure-tools/typespec-azure-rulesets": "^0.64.0",
     "@eslint/js": "^9.39.2",
     "@types/node": "^25.0.8",
