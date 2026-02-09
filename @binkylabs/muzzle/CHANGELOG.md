@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.2.1...v1.2.2) (2026-02-09)
+
+
+### Bug Fixes
+
+* adds funding information ([7171d9a](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/7171d9ade6460592aa19c5e7fc62529f7c2294e0))
+* adds funding information ([113e1a9](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/113e1a99736711a0db7e971a1a033de1287410a5))
+
 ## [1.2.1](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.2.0...v1.2.1) (2026-01-06)
 
 
