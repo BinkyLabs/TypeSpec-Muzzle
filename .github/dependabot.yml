@@ -5,6 +5,13 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 10
+    groups:
+      eslint:
+        patterns:
+          - "*eslint*"
+      typespec:
+        patterns:
+          - "*typespec*"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
