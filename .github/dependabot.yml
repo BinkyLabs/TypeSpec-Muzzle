@@ -9,6 +9,9 @@ updates:
       eslint:
         patterns:
           - "*eslint*"
+      typespec:
+        patterns:
+          - "*typespec*"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
