@@ -1,5 +1,9 @@
 # TypeSpec Muzzle
 
+[![npm version](https://img.shields.io/npm/v/@binkylabs/muzzle)](https://www.npmjs.com/package/@binkylabs/muzzle)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build and Test](https://github.com/BinkyLabs/TypeSpec-Muzzle/actions/workflows/node.yml/badge.svg?branch=main)](https://github.com/BinkyLabs/TypeSpec-Muzzle/actions/workflows/node.yml)
+
 Welcome to the TypeSpec Muzzle project. This project aims to provide tooling to suppress TypeSpec linting issues from the CLI. This is useful if you want to establish a baseline suppression in your TypeSpec definition without having to disable the rules entirely. For example when starting a new project from an OpenAPI import, or trying to enable new rules with existing infringements on an existing projects.
 
 ## Usage
