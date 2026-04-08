@@ -24,7 +24,7 @@ describe("suppressEverything", () => {
 
   beforeEach(() => {
     // Use a fixtures directory in the project for testing
-    const projectRoot = resolve(__dirname, "..", "..");
+    const projectRoot = resolve(__dirname, "..");
     testDir = join(projectRoot, "test-fixtures");
     testFilePath = join(testDir, "test.tsp");
 
