@@ -11,6 +11,7 @@ name: release-please
 
 jobs:
   release-please:
+    if: ${{ secrets.RELEASE_PLEASE_TOKEN_PROVIDER_PEM != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Generate GitHub App token
