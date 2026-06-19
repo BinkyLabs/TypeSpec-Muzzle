@@ -41,7 +41,7 @@
     "@azure-tools/typespec-autorest": "^0.69.1",
     "@azure-tools/typespec-azure-rulesets": "^0.69.1",
     "@eslint/js": "^10.0.1",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.0",
     "eslint": "^10.5.0",
     "prettier": "^3.8.4",
     "typescript": "^6.0.3",
