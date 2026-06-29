@@ -34,7 +34,7 @@ function parseCliArguments(args: string[]): SuppressionOptions {
   const emitters: string[] = [];
   let message: string | undefined;
 
-  for (let i = 0; i < args.length; ) {
+  for (let i = 0; i < args.length;) {
     const arg = args[i];
 
     if (arg === "--help" || arg === "-h") {
