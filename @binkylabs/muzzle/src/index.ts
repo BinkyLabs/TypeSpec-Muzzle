@@ -8,7 +8,70 @@ import {
   applyCodeFixes,
   formatTypeSpec,
   CompilerOptions,
+  Diagnostic,
+  NoTarget,
 } from "@typespec/compiler";
+
+interface NodeLike {
+  kind: number;
+  parent?: {
+    decorators?: readonly unknown[];
+  };
+}
+
+function isNodeLike(value: unknown): value is NodeLike {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "kind" in value &&
+    typeof value.kind === "number"
+  );
+}
+
+function hasNode(value: unknown): value is { node: NodeLike } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "node" in value &&
+    isNodeLike(value.node)
+  );
+}
+
+export function deduplicateDecoratorDiagnostics(
+  diagnostics: readonly Diagnostic[],
+): Diagnostic[] {
+  const seenCodesByDeclaration = new Map<object, Set<string>>();
+
+  return diagnostics.filter((diagnostic) => {
+    const target = diagnostic.target;
+    if (target === NoTarget) {
+      return true;
+    }
+
+    const node = isNodeLike(target)
+      ? target
+      : hasNode(target)
+        ? target.node
+        : undefined;
+    const declaration = node?.parent;
+    if (
+      declaration === undefined ||
+      declaration.decorators === undefined ||
+      !declaration.decorators.some((decorator) => decorator === node)
+    ) {
+      return true;
+    }
+
+    const seenCodes = seenCodesByDeclaration.get(declaration) ?? new Set();
+    if (seenCodes.has(diagnostic.code)) {
+      return false;
+    }
+
+    seenCodes.add(diagnostic.code);
+    seenCodesByDeclaration.set(declaration, seenCodes);
+    return true;
+  });
+}
 
 /**
  * Adds suppress directives for all warnings in the TypeSpec program.
@@ -21,7 +84,7 @@ export async function suppressEverything(
   options: Partial<Omit<SuppressionOptions, "entryPoint" | "ruleSets">> = {},
 ) {
   const codeFixes = createSuppressCodeFixes(
-    p.diagnostics,
+    deduplicateDecoratorDiagnostics(p.diagnostics),
     options.message || "Warnings auto-suppressed by @binkylabs/muzzle.",
   );
   await applyCodeFixes(p.host, codeFixes);
