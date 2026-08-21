@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.3](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.2.2...v1.2.3) (2026-08-21)
+
+
+### Bug Fixes
+
+* deduplicates suppressions for shared declarations ([15339fd](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/15339fd5a58a046c8321d0c5b460244360a0e170))
+* deduplicates suppressions for shared declarations ([dfb66ae](https://github.com/BinkyLabs/TypeSpec-Muzzle/commit/dfb66ae305367e667c0189c05b1c151ce01d3889))
+
 ## [1.2.2](https://github.com/BinkyLabs/TypeSpec-Muzzle/compare/v1.2.1...v1.2.2) (2026-02-09)
 
 
