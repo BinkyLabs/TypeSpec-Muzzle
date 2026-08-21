@@ -8,9 +8,13 @@ import {
 } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { suppressEverything } from "./index.js";
+import {
+  deduplicateDecoratorDiagnostics,
+  suppressEverything,
+} from "./index.js";
 import {
   compile,
+  Diagnostic,
   NodeHost,
   resolveCompilerOptions,
   formatTypeSpec,
@@ -197,5 +201,31 @@ model Foo {
 
     // Verify the output matches expected
     expect(result.trim()).toBe(expectedOutput.trim());
+  });
+
+  it("should deduplicate same-code decorator diagnostics on a declaration", () => {
+    const declaration: { decorators: unknown[] } = { decorators: [] };
+    const firstDecorator = { kind: 5, parent: declaration };
+    const secondDecorator = { kind: 5, parent: declaration };
+    declaration.decorators = [firstDecorator, secondDecorator];
+
+    const diagnostics = [
+      {
+        code: "@azure-tools/typespec-azure-core/no-openapi",
+        severity: "warning",
+        message: "First decorator warning",
+        target: firstDecorator,
+      },
+      {
+        code: "@azure-tools/typespec-azure-core/no-openapi",
+        severity: "warning",
+        message: "Second decorator warning",
+        target: secondDecorator,
+      },
+    ] as Diagnostic[];
+
+    expect(deduplicateDecoratorDiagnostics(diagnostics)).toEqual([
+      diagnostics[0],
+    ]);
   });
 });
