@@ -46,7 +46,7 @@
     "prettier": "^3.9.6",
     "typescript": "^7.0.2",
     "typescript-eslint": "^8.67.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   },
   "dependencies": {
     "@typespec/compiler": "^1.15.0"
