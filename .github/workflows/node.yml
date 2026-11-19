@@ -12,6 +12,8 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -31,39 +33,38 @@ jobs:
         run: npm run lint:check
       - name: Check code formatting
         run: npm run format:check
+      - name: Copy package documentation
+        run: |
+          Copy-Item LICENSE @binkylabs/muzzle/ -Verbose
+          Copy-Item README.md @binkylabs/muzzle/ -Verbose
+          Copy-Item CHANGELOG.md @binkylabs/muzzle/ -Verbose
+        shell: pwsh
       - name: Pack the package
-        run: npm pack
+        run: npm pack --workspace @binkylabs/muzzle
       - name: Upload artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: muzzle-package
-          path: ./*.tgz
+          path: ./binkylabs-muzzle-*.tgz
+          if-no-files-found: error
 
   publish-npm:
+    needs: build-and-test
     runs-on: ubuntu-latest
     environment: npm
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     permissions:
       id-token: write
-      contents: read
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Download package artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: muzzle-package
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
+          node-version: '^24.15.0'
           registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Build the project
-        run: npm run build
-      - run: npm install npm@11 -g # Use npm@11 to publish with OIDC
-      - run: |
-          Copy-Item LICENSE @binkylabs/muzzle/ -Verbose
-          Copy-Item README.md @binkylabs/muzzle/ -Verbose
-          Copy-Item CHANGELOG.md @binkylabs/muzzle/ -Verbose
-        shell: pwsh
+          package-manager-cache: false
       - name: Publish package on NPM
-        run: npm publish --access public --provenance --workspaces
+        run: npm publish ./binkylabs-muzzle-*.tgz --access public --provenance
