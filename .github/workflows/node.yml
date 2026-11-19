@@ -68,3 +68,18 @@ jobs:
           package-manager-cache: false
       - name: Publish package on NPM
         run: npm publish ./binkylabs-muzzle-*.tgz --access public --provenance
+
+  upload-release-asset:
+    needs: publish-npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: muzzle-package
+      - name: Upload the tarball to the release
+        run: gh release upload "$GITHUB_REF_NAME" ./binkylabs-muzzle-*.tgz --repo "$GITHUB_REPOSITORY" --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
